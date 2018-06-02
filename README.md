@@ -1,6 +1,7 @@
 # Our mall
 
-> A Vue.js project
+> 我们的大作业使用Vue全家桶+Express+MongoDB打造一个简单的小型商城
+后台代码在server文件夹下
 
 ## Build Setup
 
