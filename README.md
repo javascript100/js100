@@ -1,4 +1,4 @@
-# demo3
+# Our mall
 
 > A Vue.js project
 
