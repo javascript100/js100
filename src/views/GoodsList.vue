@@ -9,7 +9,7 @@
     <div class="filter-nav">
       <span class="sortby">Sort by:</span>
       <a href="javascript:void(0)" class="default cur">Default</a>
-      <a @click="sortGoods" href="javascript:void(0)" class="price">Price <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
+      <a @click="sortGoods" href="javascript:void(0)" class="price">Price <svg class="icon-arrow-short"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-arrow-short"></use></svg></a>
       <a href="javascript:void(0)" class="filterby stopPop">Filter by</a>
     </div>
     <div class="accessory-result">
@@ -90,12 +90,12 @@
           priceLevel: this.priceChecked
         }
         this.loading = true;
-        axios.get("/goods", {
+        axios.get("/goods/list", {
           params: param
         }).then(result => {
           let res = result.data;
           this.loading = false;
-          if (res.status == "0"){
+          if (res.status == '0'){
             if (flag) {
               this.goodsList = this.goodsList.concat(res.result.list);
 
@@ -134,7 +134,7 @@
         axios.post("/goods/addCart", {
           productId: productId
         }).then((res) => {
-          if (res.status == 0) {
+          if (res.status == '0') {
             alert("加入成功！");
           } else {
             alert("msg:" + res.msg);

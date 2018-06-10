@@ -74,7 +74,18 @@
         nickName: ''
       }
     },
+    mounted() {
+      this.checkLogin();
+    },
     methods: {
+      checkLogin () {
+        axios.get("/users/checkLogin").then((response) => {
+          let res = response.data;
+          if (res.status == '0') {
+            this.nickName = res.result;
+          }
+        })
+      },
       login () {
         if (!this.userName || !this.userPwd) {
           this.errorTip = true;
@@ -85,7 +96,7 @@
            userPwd: this.userPwd
          }).then((response) => {
            let res = response.data;
-           if (res.status == "0") {
+           if (res.status == '0') {
              this.errorTip = false;
              this.loginModalFlag = false;
              this.nickName = res.result.userName;
@@ -98,7 +109,7 @@
       logOut () {
         axios.post("/users/logout").then((response) => {
           let res = response.data;
-          if (res.status == 0) {
+          if (res.status == '0') {
             this.nickName = '';
           }
         })
