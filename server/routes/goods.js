@@ -81,7 +81,7 @@ router.get("/list", function (req, res, next) {
 router.post("/addCart", function (req, res, next) {
   var userId = '10001',
     productId = req.body.productId;
-  
+
   var User = require('../models/user');
 
   User.findOne({
@@ -93,17 +93,19 @@ router.post("/addCart", function (req, res, next) {
         msg: err.message
       })
     } else {
-      console.log("userDoc:" + userDoc);
+      console.log("userDoc: " + userDoc);
       if (userDoc) {
         let goodsItem = '';
         userDoc.cartList.forEach(function (item) {
-          if (item.productId == productId) {
+          console.log("before:" + item)
+          if (item.productId == productId) { // 表示数据库中已有这条数据
             goodsItem = item;
             item.productNum++;
+            console.log("after:" + item)
           }
         });
-        if (goodsItem) {
-          userDoc.save(function (err2, doc2) {
+        if (goodsItem) { // 数据库里已有这一项
+          userDoc.save(function (err2, userDoc2) {    
             if (err2) {
               res.json({
                 status: '1',
@@ -118,21 +120,29 @@ router.post("/addCart", function (req, res, next) {
             }
           })
         } else {
-
           Goods.findOne({
             productId: productId
-          }, function (err1, doc) {
-            if (err1) {
+          }, function (goodErr, goodDoc) {
+            if (goodErr) {
               res.json({
                 status: '1',
-                msg: err1.message
+                msg: goodErr.message
               })
             } else {
-              if (doc) {
-                doc.productNum = 1;
-                doc.checked = 1;
-                userDoc.cartList.push(doc);
-                userDoc.save(function (err2, doc2) {
+              if (goodDoc) {
+                console.log("goodDoc:before:" + goodDoc)
+                var newDoc = {
+                  "productId": goodDoc.productId,
+                  "productName": goodDoc.productName,
+                  "salePrice": goodDoc.salePrice,
+                  "productImage": goodDoc.productImage,
+                  "checked": '1',
+                  "productNum": '1'
+                }
+                console.log("goodDoc:after:" + JSON.stringify(newDoc))
+                userDoc.cartList.push(newDoc);
+                console.log("notice:" + userDoc)
+                userDoc.save(function (err2, userDoc2) {
                   if (err2) {
                     res.json({
                       status: '1',
@@ -153,6 +163,77 @@ router.post("/addCart", function (req, res, next) {
       }
     }
   })
+
+  // User.findOne({
+  //   userId: userId
+  // }, function (err, userDoc) {
+  //   if (err) {
+  //     res.json({
+  //       status: '1', // '1'表示报错
+  //       msg: err.message
+  //     })
+  //   } else {
+  //     console.log("userDoc:" + userDoc);
+  //     if (userDoc) {
+  //       let goodsItem = '';
+  //       userDoc.cartList.forEach(function (item) {
+  //         if (item.productId == productId) {
+  //           goodsItem = item;
+  //           item.productNum++;
+  //         }
+  //       });
+  //       if (goodsItem) {
+  //         userDoc.save(function (err2, doc2) {
+  //           if (err2) {
+  //             res.json({
+  //               status: '1',
+  //               msg: err2.message
+  //             })
+  //           } else {
+  //             res.json({
+  //               status: '0',
+  //               msg: '',
+  //               result: 'suc'
+  //             })
+  //           }
+  //         })
+  //       } else {
+
+  //         Goods.findOne({
+  //           productId: productId
+  //         }, function (err3, doc3) {
+  //           if (err3) {
+  //             res.json({
+  //               status: '1',
+  //               msg: err1.message
+  //             })
+  //           } else {
+  //             if (doc3) {
+  //               // 插入数据
+  //               doc3.productNum = '1';
+  //               doc3.checked = '1';
+  //               userDoc.cartList.push(doc3);
+  //               userDoc.save(function (err4, doc4) {
+  //                 if (err4) {
+  //                   res.json({
+  //                     status: '1',
+  //                     msg: err4.message
+  //                   })
+  //                 } else {
+  //                   res.json({
+  //                     status: '0',
+  //                     msg: '',
+  //                     result: 'suc'
+  //                   })
+  //                 }
+  //               })
+  //             }
+  //           }
+  //         })
+  //       }
+  //     }
+  //   }
+
 
 });
 module.exports = router;
