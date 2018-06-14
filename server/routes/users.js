@@ -127,6 +127,176 @@ router.post("/cartDel", function (req, res, next) {
     }
   })
 
+});
+
+// 修改商品数量
+router.post("/cartEdit", function (req, res, next) {
+  var userId = req.cookies.userId,
+    productId = req.body.productId,
+    productNum = req.body.productNum,
+    checked = req.body.checked;
+  User.update({
+    "userId": userId,
+    "cartList.productId": productId
+  }, {
+    "cartList.$.productNum": productNum,
+    "cartList.$.checked": checked,
+  }, function (err, doc) {
+    console.log("err: " + err)
+    console.log("doc: " + doc)
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      });
+    } else {
+      res.json({
+        status: '0',
+        msg: '',
+        result: 'suc'
+      });
+    }
+  });
+});
+
+// 购物车全选
+router.post("/editCheckAll", function (req, res, next) {
+  var userId = req.cookies.userId,
+    checkAll = req.body.checkAll ? '1' : '0';
+  User.findOne({
+    userId: userId
+  }, function (err, user) {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      });
+    } else {
+      if (user) {
+        // 查到用户数据后遍历购物车将购物车的每一项改为选中状态
+        user.cartList.forEach((item) => {
+          item.checked = checkAll;
+        });
+        user.save(function (err1, doc) {
+          if (err1) {
+            res.json({
+              status: '1',
+              msg: err.message,
+              result: ''
+            });
+          } else {
+            res.json({
+              status: '0',
+              msg: '',
+              result: 'suc'
+            });
+          }
+        });
+      }
+    }
+  });
+})
+
+// 查询用户地址接口
+router.get("/addressList", function (req, res, next) {
+  var userId = req.cookies.userId;
+  User.findOne({
+    userId: userId
+  }, function (err, doc) {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      });
+    } else {
+      res.json({
+        status: '0',
+        msg: '',
+        result: doc.addressList
+      });
+    }
+  });
+});
+
+// 设置默认地址接口
+router.post("/setDefault", function (req, res, next) {
+  var userId = req.cookies.userId,
+    addressId = req.body.addressId;
+  if (!addressId) {
+    res.json({
+      status: '1003',
+      msg: 'addressId is null',
+      result: ''
+    });
+  } else {
+    User.findOne({
+      userId: userId
+    }, function (err, doc) {
+      if (err) {
+        res.json({
+          status: '1',
+          msg: err.message,
+          result: ''
+        });
+      } else {
+        var addressList = doc.addressList;
+        addressList.forEach((item) => {
+          if (item.addressId == addressId) {
+            item.isDefault = true;
+          } else {
+            item.isDefault = false;
+          }
+        });
+        doc.save(function (err1, doc1) {
+          if (err1) {
+            res.json({
+              status: '1',
+              msg: err1.message,
+              result: ''
+            });
+          } else {
+            res.json({
+              status: '0',
+              msg: '',
+              result: ''
+            });
+          }
+        })
+      }
+    });
+  }
+});
+
+// 删除地址接口
+router.post("/delAddress", function (req, res, next) {
+  var userId = req.cookies.userId,
+    addressId = req.body.addressId;
+  User.update({
+    userId: userId
+  }, {
+    $pull: {
+      'addressList': {
+        'addressId': addressId
+      }
+    }
+  }, function (err, doc) {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      });
+    } else {
+      res.json({
+        status: '0',
+        msg: '',
+        result: ''
+      });
+    }
+  })
 })
 
 module.exports = router;
