@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+require('./../util/util.js');
 var User = require('./../models/user');
 /* GET users listing. */
 router.get('/', function (req, res, next) {
@@ -297,6 +297,138 @@ router.post("/delAddress", function (req, res, next) {
       });
     }
   })
+});
+
+router.post("/payMent", function (req, res, next) {
+  var userId = req.cookies.userId,
+    addressId = req.body.addressId,
+    orderTotal = req.body.orderTotal;
+  User.findOne({
+    userId: userId
+  }, function (err, doc) {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      });
+    } else {
+      var address = '',
+        goodsList = [];
+      // 获取当前用户地址信息
+      doc.addressList.forEach((item) => {
+        if (item.addressId == addressId) {
+          address = item;
+        }
+      });
+      // 获取用户购物车的购买商品
+      doc.cartList.filter((item) => {
+        if (item.checked == '1') {
+          goodsList.push(item);
+        }
+      });
+      var platform = '479';
+      // 创建两个随机数
+      var ran1 = Math.floor(Math.random() * 10);
+      var ran2 = Math.floor(Math.random() * 10);
+      var sysDate = new Date().Format('yyyyMMddhhmmss');
+      var createDate = new Date().Format('yyyy-MM-dd hh:mm:ss');
+      var orderId = platform + ran1 + sysDate + ran2;
+      var order = {
+        orderId: orderId,
+        orderTotal: orderTotal,
+        addressInfo: address,
+        goodsList: goodsList,
+        orderStatus: '1',
+        createDate: createDate
+      };
+
+      doc.orderList.push(order);
+      doc.save(function (err1, doc1) {
+        if (err1) {
+          res.json({
+            status: '1',
+            msg: err1.message,
+            result: ''
+          });
+        } else {
+          res.json({
+            status: '0',
+            msg: '',
+            result: {
+              orderId: order.orderId,
+              orderTotal: order.orderTotal
+            }
+          });
+        }
+      });
+    }
+  });
+  // 清空购物车中选中的商品
+  User.update({
+    userId: userId
+  }, {
+    $pull: {
+      'cartList': {
+        'checked': '1'
+      }
+    }
+  }, function (err, doc) {
+    if (err) {
+      console.log("清空购物车失败！");
+    } else {
+      console.log("清空购物车成功！");
+    }
+  });
+});
+
+// 根据orderId查询订单信息
+router.get("/orderDetail", function (req, res, next) {
+  var userId = req.cookies.userId,
+    orderId = req.param("orderId");
+  User.findOne({
+    userId: userId
+  }, function (err, userInfo) {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      });
+    } else {
+      var orderList = userInfo.orderList;
+      if (orderList.length > 0) {
+        var orderTotal = 0;
+        orderList.forEach((item) => {
+          if (item.orderId == orderId) {
+            orderTotal = item.orderTotal;
+          }
+        });
+        if (orderTotal > 0) {
+          res.json({
+            status: '0',
+            msg: '',
+            result: {
+              orderId: orderId,
+              orderTotal: orderTotal
+            }
+          });
+        } else {
+          res.json({
+            status: '120002',
+            msg: '没有该订单!',
+            result: ''
+          });
+        }
+      } else {
+        res.json({
+          status: '120001',
+          msg: '当前用户未创建订单!',
+          result: ''
+        });
+      }
+    }
+  });
 })
 
 module.exports = router;
