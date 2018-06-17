@@ -2,7 +2,7 @@
   <div>
     <nav-header></nav-header>
     <nav-bread>
-      <span>Address</span>
+      <span>选择地址</span>
     </nav-bread>
     <div class="checkout-page">
       <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -41,21 +41,21 @@
       <div class="container">
         <div class="checkout-addr">
           <div class="page-title-normal">
-            <h2 class="page-title-h2"><span>check out</span></h2>
+            <h2 class="page-title-h2"><span>选择地址</span></h2>
           </div>
           <!-- process step -->
           <div class="check-step">
             <ul>
-              <li class="cur"><span>Confirm</span> address</li>
-              <li><span>View your</span> order</li>
-              <li><span>Make</span> payment</li>
-              <li><span>Order</span> confirmation</li>
+              <li class="cur"><span>选择你的地址</span></li>
+              <li><span>确认你的订单</span></li>
+              <li><span>确认支付</span></li>
+              <li><span>完成订单</span></li>
             </ul>
           </div>
 
           <!-- address list -->
           <div class="page-title-normal checkout-title">
-            <h2><span>Shipping address</span></h2>
+            <h2><span>收货地址</span></h2>
           </div>
           <div class="addr-list-wrap">
             <div class="addr-list">
@@ -81,7 +81,7 @@
                     <i class="icon-add">
                       <svg class="icon icon-add"><use xlink:href="#icon-add"></use></svg>
                     </i>
-                    <p>Add new address</p>
+                    <p>添加新的收货地址</p>
                   </div>
                 </li>
               </ul>
@@ -89,7 +89,7 @@
 
             <div class="shipping-addr-more">
               <a class="addr-more-btn up-down-btn" href="javascript:;" @click="expand" v-bind:class="{'open':limit>3}">
-                more
+                更多
                 <i class="i-up-down">
                   <i class="i-up-down-l"></i>
                   <i class="i-up-down-r"></i>
@@ -100,26 +100,26 @@
 
           <!-- shipping method-->
           <div class="page-title-normal checkout-title">
-            <h2><span>Shipping method</span></h2>
+            <h2><span>配送方式</span></h2>
           </div>
           <div class="lemall-msg-info hidden">
-            <span>The region you selected is not within our delivery area. Please select another shipping address within our delivery areas.</span>
+            <span>你选择地区不在配送范围</span>
           </div>
           <div class="shipping-method-wrap">
             <div class="shipping-method">
               <ul>
                 <li class="check">
-                  <div class="name">Standard shipping</div>
-                  <div class="price">Free</div>
+                  <div class="name">XX快递</div>
+                  <div class="price">配送费：¥10</div>
                   <div class="shipping-tips">
-                    <p>Once shipped，Order should arrive in the destination in 1-7 business days</p>
+                    <p>承诺发货后在1-7个工作日内必定送达</p>
                   </div>
                 </li>
               </ul>
             </div>
           </div>
           <div class="next-btn-wrap">
-            <router-link class="btn btn--m btn--red" v-bind:to="{path:'orderConfirm', query:{'addressId': selectedAddId}}">Next</router-link>
+            <router-link class="btn btn--m btn--red" v-bind:to="{path:'orderConfirm', query:{'addressId': selectedAddId}}">下一步</router-link>
           </div>
         </div>
       </div>
