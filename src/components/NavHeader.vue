@@ -11,6 +11,7 @@
       <div class="navbar-left-container">
         <a href="/">
           <img class="navbar-brand-logo" style="width:48px;height:48px;border-radius:50%" src="static/doglogo.png"></a>
+
       </div>
       <div class="navbar-right-container" style="display: flex;">
         <div class="navbar-menu-container">

@@ -135,26 +135,26 @@ router.post("/cartDel", function (req, res, next) {
   User.update({
     userId: userId
   }, {
-    $pull: {
-      'cartList': {
-        'productId': productId
+      $pull: {
+        'cartList': {
+          'productId': productId
+        }
       }
-    }
-  }, function (err, doc) {
-    if (err) {
-      res.json({
-        status: '1',
-        msg: err.message,
-        result: ''
-      });
-    } else {
-      res.json({
-        status: '0',
-        msg: '',
-        result: 'suc'
-      });
-    }
-  })
+    }, function (err, doc) {
+      if (err) {
+        res.json({
+          status: '1',
+          msg: err.message,
+          result: ''
+        });
+      } else {
+        res.json({
+          status: '0',
+          msg: '',
+          result: 'suc'
+        });
+      }
+    })
 
 });
 
@@ -168,25 +168,25 @@ router.post("/cartEdit", function (req, res, next) {
     "userId": userId,
     "cartList.productId": productId
   }, {
-    "cartList.$.productNum": productNum,
-    "cartList.$.checked": checked,
-  }, function (err, doc) {
-    console.log("err: " + err)
-    console.log("doc: " + doc)
-    if (err) {
-      res.json({
-        status: '1',
-        msg: err.message,
-        result: ''
-      });
-    } else {
-      res.json({
-        status: '0',
-        msg: '',
-        result: 'suc'
-      });
-    }
-  });
+      "cartList.$.productNum": productNum,
+      "cartList.$.checked": checked,
+    }, function (err, doc) {
+      console.log("err: " + err)
+      console.log("doc: " + doc)
+      if (err) {
+        res.json({
+          status: '1',
+          msg: err.message,
+          result: ''
+        });
+      } else {
+        res.json({
+          status: '0',
+          msg: '',
+          result: 'suc'
+        });
+      }
+    });
 });
 
 // 购物车全选
@@ -298,7 +298,55 @@ router.post("/setDefault", function (req, res, next) {
     });
   }
 });
-
+//添加地址接口
+router.post("/addAddress", function (req, res, next) {
+  var userId = req.cookies.userId,
+    addressId = req.body.addressId,
+    userName = req.body.userName,
+    streetName = req.body.streetName,
+    postCode = req.body.postCode,
+    tel = req.body.tel;
+    console.log(userId)
+    
+  User.findOne({
+    userId: userId
+  }, function (err, userdoc) {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message
+      })
+    } else {
+      console.log("userDoc: " + userdoc);
+      if (userdoc) {
+        
+        var newAddress = {
+          "addressId": addressId,
+          "userName": userName,
+          "streetName": streetName,
+          "postCode": postCode,
+          "tel": tel,
+          "isDefault": false
+        }
+        userdoc.addressList.push(newAddress)
+        userdoc.save(function (err, userdoc2) {
+          if (err) {
+            res.json({
+              status: '1',
+              msg: err.message
+            })
+          } else {
+            res.json({
+              status: '0',
+              msg: '',
+              result: 'suc'
+            })
+          }
+        })
+      }
+    }
+  });
+})
 // 删除地址接口
 router.post("/delAddress", function (req, res, next) {
   var userId = req.cookies.userId,
@@ -306,26 +354,26 @@ router.post("/delAddress", function (req, res, next) {
   User.update({
     userId: userId
   }, {
-    $pull: {
-      'addressList': {
-        'addressId': addressId
+      $pull: {
+        'addressList': {
+          'addressId': addressId
+        }
       }
-    }
-  }, function (err, doc) {
-    if (err) {
-      res.json({
-        status: '1',
-        msg: err.message,
-        result: ''
-      });
-    } else {
-      res.json({
-        status: '0',
-        msg: '',
-        result: ''
-      });
-    }
-  })
+    }, function (err, doc) {
+      if (err) {
+        res.json({
+          status: '1',
+          msg: err.message,
+          result: ''
+        });
+      } else {
+        res.json({
+          status: '0',
+          msg: '',
+          result: ''
+        });
+      }
+    })
 });
 
 router.post("/payMent", function (req, res, next) {
@@ -397,18 +445,18 @@ router.post("/payMent", function (req, res, next) {
   User.update({
     userId: userId
   }, {
-    $pull: {
-      'cartList': {
-        'checked': '1'
+      $pull: {
+        'cartList': {
+          'checked': '1'
+        }
       }
-    }
-  }, function (err, doc) {
-    if (err) {
-      console.log("清空购物车失败！");
-    } else {
-      console.log("清空购物车成功！");
-    }
-  });
+    }, function (err, doc) {
+      if (err) {
+        console.log("清空购物车失败！");
+      } else {
+        console.log("清空购物车成功！");
+      }
+    });
 });
 
 // 根据orderId查询订单信息

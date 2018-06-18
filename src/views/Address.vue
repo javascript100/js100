@@ -77,12 +77,17 @@
                   <div class="addr-opration addr-default" v-if="item.isDefault">Default address</div>
                 </li>
                 <li class="addr-new">
-                  <div class="add-new-inner">
+                  <a href="javascript:;" @click="addAddressConfirm()">
+                    <div class="add-new-inner">
                     <i class="icon-add">
+                      <!-- 添加链接 -->
+                      
                       <svg class="icon icon-add"><use xlink:href="#icon-add"></use></svg>
+                     
                     </i>
                     <p>添加新的收货地址</p>
                   </div>
+                   </a>
                 </li>
               </ul>
             </div>
@@ -133,6 +138,23 @@
         <a class="btn btn--m" href="javascript:;" @click="isMdShow=false">取消</a>
       </div>
     </modal>
+    <modal v-bind:mdShow="isMdShow1" @close="closeModal">
+      
+      <p slot="message">
+        添加地址<br/> 
+          编号：<input type="text" ref="addressId" value="" style="height:15px"><br/>
+          姓名：<input type="text" ref="userName" value="" style="height:15px"><br/>
+          地址：<input type="text" ref="streetName" value="" style="height:15px"><br/>
+          电话：<input type="text" ref="tel" value="" style="height:15px"><br/>
+          邮编：<input type="text" ref="postCode" value="" style="height:15px"><br/>  
+      </p>
+      
+      <div slot="btnGroup">
+        <a class="btn btn--m" href="javascript:;"  @click="addAddress()">确认</a>
+        <a class="btn btn--m" href="javascript:;" @click="isMdShow1=false">取消</a>
+      </div>
+      
+    </modal>
     <nav-footer></nav-footer>
   </div>
 </template>
@@ -143,17 +165,18 @@ import NavBread from "@/components/NavBread.vue";
 import Modal from "@/components/Modal.vue";
 import axios from "axios";
 export default {
-  data () {
+  data() {
     return {
       limit: 3, // 地址默认只显示三条
       checkIndex: 0,
-      selectedAddId: '',
+      selectedAddId: "",
       addressList: [],
       isMdShow: false,
-      addressId: ''
-    }
+      addressId: "",
+      isMdShow1: false
+    };
   },
-  mounted () {
+  mounted() {
     this.init();
   },
   components: {
@@ -163,54 +186,81 @@ export default {
     Modal
   },
   computed: {
-    addressListFilter () {
-      return this.addressList.slice(0,this.limit);
+    addressListFilter() {
+      return this.addressList.slice(0, this.limit);
     }
   },
   methods: {
-    init () {
-      axios.get("/users/addressList").then((response) => {
+    init() {
+      axios.get("/users/addressList").then(response => {
         let res = response.data;
         this.addressList = res.result;
-      })
+      });
     },
-    expand () { // 点击more切换展开和收缩
+    expand() {
+      // 点击more切换展开和收缩
       if (this.limit == 3) {
         this.limit = this.addressList.length;
       } else {
         this.limit = 3;
       }
     },
-    setDefault (addressId) { //设置默认地址
-      axios.post("/users/setDefault",{
-        addressId: addressId
-      }).then((response) => {
-        let res = response.data;
-        if (res.status == '0') {
-          console.log("set Default");
-          this.init();
-        }
-      });
+    setDefault(addressId) {
+      //设置默认地址
+      axios
+        .post("/users/setDefault", {
+          addressId: addressId
+        })
+        .then(response => {
+          let res = response.data;
+          if (res.status == "0") {
+            console.log("set Default");
+            this.init();
+          }
+        });
     },
-    closeModal () {
+    closeModal() {
       this.isMdShow = false;
     },
-    delAddressConfirm (addressId) {
+    delAddressConfirm(addressId) {
       this.isMdShow = true;
       this.addressId = addressId;
     },
     delAddress() {
-      axios.post("/users/delAddress",{
-        addressId: this.addressId
-      }).then((response) => {
-        let res = response.data;
-        if (res.status == '0') {
-          console.log("del success");
-          this.isMdShow = false;
-          this.init();
-        }
-      })
+      axios
+        .post("/users/delAddress", {
+          addressId: this.addressId
+        })
+        .then(response => {
+          let res = response.data;
+          if (res.status == "0") {
+            console.log("del success");
+            this.isMdShow = false;
+            this.init();
+          }
+        });
+    },
+    addAddressConfirm() {
+      this.isMdShow1 = true;
+    },
+    addAddress() {
+        
+       axios.post("/users/addAddress",{
+        addressId:this.$refs.addressId.value,
+        userName:this.$refs.userName.value,
+        streetName:this.$refs.streetName.value,
+        postCode:this.$refs.postCode.value,
+        tel:this.$refs.tel.value
+       })
+       .then(response => {
+          let res = response.data;
+          if (res.status == "0") {
+            console.log("add success");
+            this.isMdShow1 = false;
+            this.init();
+          }
+       });
     }
   }
-}
+};
 </script>
