@@ -130,8 +130,8 @@
     </div>
     <modal v-bind:mdShow="modalConfirm" @close="closeModal">
       <p slot="message">你确认要删除此条数据吗</p>
-      <div slot="btnGroup">
-        <a class="btn btn--m" href="javascript:;" @click="delCart">确认</a>
+      <div style="display:flex;justify-content:space-around;margin-bottom:15px;" slot="btnGroup">
+        <a class="btn btn--m" style="margin:0 15px;border:1px solid" href="javascript:;" @click="delCart">确认</a>
         <a class="btn btn--m" href="javascript:;" @click="modalConfirm = false">关闭</a>
       </div>
     </modal>

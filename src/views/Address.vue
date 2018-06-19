@@ -133,8 +133,8 @@
       <p slot="message">
         你是否确认要删除此地址？
       </p>
-      <div slot="btnGroup">
-        <a class="btn btn--m" href="javascript:;" @click="delAddress">确认</a>
+      <div style="display:flex;justify-content:space-around;margin-bottom:15px;" slot="btnGroup">
+        <a class="btn btn--m" style="margin:0 15px;border:1px solid" href="javascript:;" @click="delAddress">确认</a>
         <a class="btn btn--m" href="javascript:;" @click="isMdShow=false">取消</a>
       </div>
     </modal>
@@ -142,15 +142,15 @@
       
       <p slot="message">
         添加地址<br/> 
-          编号：<input type="text" ref="addressId" value="" style="height:15px"><br/>
-          姓名：<input type="text" ref="userName" value="" style="height:15px"><br/>
-          地址：<input type="text" ref="streetName" value="" style="height:15px"><br/>
-          电话：<input type="text" ref="tel" value="" style="height:15px"><br/>
-          邮编：<input type="text" ref="postCode" value="" style="height:15px"><br/>  
+          <!-- 编号：<input type="text" ref="addressId" value="" style="margin:10px 0;height:15px"><br/> -->
+          姓名：<input type="text" ref="userName" value="" style="margin:10px 0;height:15px"><br/>
+          地址：<input type="text" ref="streetName" value="" style="margin:10px 0;height:15px"><br/>
+          电话：<input type="text" ref="tel" value="" style="margin:10px 0;height:15px"><br/>
+          邮编：<input type="text" ref="postCode" value="" style="margin:10px 0;height:15px"><br/>  
       </p>
       
-      <div slot="btnGroup">
-        <a class="btn btn--m" href="javascript:;"  @click="addAddress()">确认</a>
+      <div style="display:flex;justify-content:space-around;margin-bottom:15px;" slot="btnGroup">
+        <a class="btn btn--m" style="margin:0 15px;border:1px solid" href="javascript:;"  @click="addAddress">确认</a>
         <a class="btn btn--m" href="javascript:;" @click="isMdShow1=false">取消</a>
       </div>
       
@@ -246,7 +246,7 @@ export default {
     addAddress() {
         
        axios.post("/users/addAddress",{
-        addressId:this.$refs.addressId.value,
+        // addressId:this.$refs.addressId.value,
         userName:this.$refs.userName.value,
         streetName:this.$refs.streetName.value,
         postCode:this.$refs.postCode.value,
@@ -258,6 +258,7 @@ export default {
             console.log("add success");
             this.isMdShow1 = false;
             this.init();
+            this.limit = this.addressList.length + 1;
           }
        });
     }

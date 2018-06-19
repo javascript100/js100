@@ -54,8 +54,8 @@
       <p slot="message">
         请先登录，否则无法加入到购物车！
       </p>
-      <div slot="btnGroup">
-        <a class="btn btn--m" href="javascript:;" @click="mdShow = false">关闭</a>
+      <div style="display:flex;justify-content:space-around;margin-bottom:15px;" slot="btnGroup">
+        <a class="btn btn--m" href="javascript:;" style="margin:0 15px;border:1px solid" @click="mdShow = false">关闭</a>
       </div>
     </modal>
 
@@ -66,8 +66,8 @@
         </svg>
         <span>加入购物车成功！</span>
       </p>
-      <div slot="btnGroup">
-        <a class="btn btn--m" href="javascript:;" @click="mdShowCart = false">继续购物</a>
+      <div style="display:flex;justify-content:space-around;margin-bottom:15px;" slot="btnGroup">
+        <a class="btn btn--m" href="javascript:;" style="margin:0 15px;border:1px solid" @click="mdShowCart = false">继续购物</a>
         <router-link class="btn btn--m" href="javascript:;" to="/cart">查看购物车</router-link>
       </div>
     </modal>
